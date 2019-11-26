@@ -82,10 +82,6 @@ class Producer:
 
         with urllib.request.urlopen(self.data_url) as myfile:
             while True:
-                if cnt % Producer.BATCH_SIZE == 0:
-                    self.logger.info('parsed {}, sleeping for {}'.format(cnt, Producer.DELAY))
-                    time.sleep(Producer.DELAY)
-
                 line = myfile.readline()
                 if not line:
                     self.logger.info('No lines to read')
@@ -103,7 +99,14 @@ class Producer:
                 self.__produce(bytes(dc_line, 'utf-8'))
                 cnt += 1
 
+                if self.mode == 'delay':
+                    if cnt % Producer.BATCH_SIZE == 0:
+                        self.logger.info('parsed {}, sleeping for {}'.format(cnt, Producer.DELAY))
+                        time.sleep(Producer.DELAY)
+
         t2 = time.time()
+
+        self.__add_stats_pg(cnt)
 
         self.logger.info('Total time taken:{}'.format(t2 - t1))
 
