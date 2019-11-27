@@ -22,9 +22,9 @@ This repo covers the following tasks:
  However, local installation of Kafka and any PG server can be used independently too.
  
  
-### How to run - using docker
+## How to run - using docker
  
-## Kafka
+### Kafka
  
 The docker image used is [docker-kafka by spotify](https://github.com/spotify/docker-kafka). 
 To start the service
