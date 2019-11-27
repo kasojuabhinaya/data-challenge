@@ -67,9 +67,10 @@ class Producer:
         :type data: bytes
         """
         try:
-            self.producer.send(self.kafka_topic, value=data).get(timeout=10)
+            self.producer.send(self.kafka_topic, value=data)
+            self.producer.flush()
         except Exception as e:
-            print(e)
+            self.logger.error(e)
 
     def __handler(self):
         """
@@ -109,6 +110,7 @@ class Producer:
         self.__add_stats_pg(cnt)
 
         self.logger.info('Total time taken:{}'.format(t2 - t1))
+        self.logger.info('Total produced:{}'.format(cnt))
 
     def run(self):
         self.__read_ini()
@@ -118,6 +120,6 @@ class Producer:
 
 
 if __name__ == "__main__":
-    mode = os.getenv('MODE', 'delay').lower()
+    mode = os.getenv('MODE', 'live').lower()
     producer = Producer(mode=mode)
     producer.run()
