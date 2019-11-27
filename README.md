@@ -16,15 +16,15 @@ This repo covers the following tasks:
    
    Note: rolling window is small as the data is small.
    
- 4. Produced data and consumed data is written to a *Postgres DB (PG)*.
+ 4. Produced data and consumed data is written to a *Postgres DB (PG)* and can be monitored
    
  The solution is **Docker** based but can be partly run otherwise. 
  However, local installation of Kafka and any PG server can be used independently too.
  
  
-###How to run - using docker
+### How to run - using docker
  
-##Kafka
+## Kafka
  
 The docker image used is [docker-kafka by spotify](https://github.com/spotify/docker-kafka). 
 To start the service
@@ -91,12 +91,6 @@ cd <dockers/producer>
 docker build --no-cache -t abhi/oetker-producer .
 docker run -it abhi/oetker-producer
 ```
-
-To run the monitor
-```buildoutcfg
-docker run -it abhi/oetker-producer monitor
-```
-
 The run command runs the producer `producer.py`, 
 which reads the file (URL). The data is a stringified JSON.
 Each line is read and streamed into Kafka. 
@@ -106,6 +100,12 @@ Additionally, the image can be run as follows:
 `docker run -it --env MODE=DELAY abhi/oetker-producer`
 
 This injects a delay of 2s per 50 lines read.
+
+### Monitor
+```buildoutcfg
+docker run -it abhi/oetker-producer monitor
+```
+
 
 ## How to run - local mode
 
