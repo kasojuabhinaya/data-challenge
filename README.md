@@ -3,7 +3,7 @@
 This repo covers the following tasks:
 
 1. Read data from a file hosted on web. 
-2. Stream *(produce)* the data into **Kafka**.
+2. Stream *(producer)* the data into **Kafka**.
 3. Using **Spark**, read the stream *(consume)* the data.
    Provide stats like 
    - *total items in the batch*
@@ -22,9 +22,9 @@ This repo covers the following tasks:
  However, local installation of Kafka and any PG server can be used independently too.
  
  
-##How to run
+###How to run - using docker
  
-###Kafka
+##Kafka
  
 The docker image used is [docker-kafka by spotify](https://github.com/spotify/docker-kafka). 
 To start the service
@@ -55,10 +55,17 @@ docker run -p 2181:2181 -p 9092:9092 \
    
  On Ubuntu
  ```buildoutcfg
-
+docker run -p 2181:2181 -p 9092:9092 \
+  --env ADVERTISED_HOST=$(hostname -I) \
+  --env ADVERTISED_PORT=9092 \
+  --env CONSUMER_THREADS=1 \
+  --env TOPICS=oetker \
+  --env ZK_CONNECT=kafka7zookeeper:2181/root/path \
+  --env GROUP_ID=group-1 \
+  spotify/kafka
 ```
 
-## Postres
+### Postgres
 
 ```buildoutcfg
 cd <dockers/postgres>
@@ -67,7 +74,7 @@ docker run -it abhi/oetker-postgres
 ```
 Note: The run recreates the necessary schemas, so data is not persisted.
 
-## Consumer
+### Consumer
 
 ```buildoutcfg
 cd <dockers/consumer>
@@ -77,7 +84,7 @@ docker run -it abhi/oetker-consumer
 This builds an image with Spark, python, and submits the job,  namely `consumer.py` with necessary 
 dependencies. 
 
-## Producer
+### Producer
 
 ```buildoutcfg
 cd <dockers/producer>
@@ -100,13 +107,12 @@ Additionally, the image can be run as follows:
 
 This injects a delay of 2s per 50 lines read.
 
-## Running locally
+## How to run - local mode
 
-It is better to run Kafka using the docker.
+This solution works better running Kafka using the docker
 
-If there is a running PG, please update `dockers/producer/config.ini`
-and `dockers/consumer/config.ini` with the details of the Postgres server.
-Also, run the script `dockers/postgres/init.sql` to create the necessary schema and tables.
+To run locally - if there is a running PG, please update `dockers/producer/config.ini`
+and `dockers/consumer/config.ini` with the details of the Postgres server. Also, run the script `dockers/postgres/init.sql` to create the necessary schema and tables.
 
 ### Consumer
 
@@ -121,7 +127,7 @@ Run
 pip3 install -t dependencies -r <path_to>/dockers/consumer/requirements.txt --no-cache-dir
 cd dependencies && zip -r ../dependencies.zip .
 `
-Essentially creating a folder with required packages downloaded. Navigate to the folder and zip into one.
+This will essentially create a folder with required packages downloaded. Navigate to the folder and zip into one.
 
 `export PYSPARK_PYTHON=python3` to use Python 3
 
@@ -132,7 +138,7 @@ Essentially creating a folder with required packages downloaded. Navigate to the
       <path_to>/dockers/consumer/consumer.py
 ```
 
-## Producer
+### Producer
 
 Change the host in `producer/config.in` to localhost (assuming running locally). 
 Also, update the postgres details. If postgres is running locally using Docker, please
