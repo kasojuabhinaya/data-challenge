@@ -1,0 +1,25 @@
+
+version: '3.3'
+services:
+  postgres:
+    container_name: oetker-postgres
+    build:
+      context: ./dockers/postgres
+      dockerfile: ./Dockerfile
+    ports:
+      - "5431:5432"
+  consumer:
+    container_name: oetker-consumer
+    build:
+      context: ./dockers/consumer
+      dockerfile: ./Dockerfile
+    depends_on:
+      - postgres
+  producer:
+    container_name: oetker-producer
+    build:
+      context: ./dockers/producer
+      dockerfile: ./Dockerfile
+    depends_on:
+      - consumer
+      - postgres

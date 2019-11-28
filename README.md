@@ -153,3 +153,35 @@ chmod +x start.sh
 ./start.sh monitor 
 ```
 
+### Using `docker-compose`
+
+requires `docker-compose`
+
+1. Please run `kafka` like in the above steps and wait for it to be up.
+2. cd to the root of the project `data-challenge`
+```buildoutcfg
+docker-compose up
+```
+All the images are built and started
+
+3. cd to `data-challenge` in a new terminal
+```buildoutcfg
+#To see the stats
+docker run data-challenge_producer monitor
+```
+
+```buildoutcfg
+# To produce
+docker run data-challenge_producer
+```
+
+```buildoutcfg
+# To produce in a delay mode
+docker run -it --env MODE=DELAY data-challenge_producer
+```
+To bring the services down
+```buildoutcfg
+cd <path_to/>data-challenge
+docker-compose down
+```
+
